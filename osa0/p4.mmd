@@ -1,0 +1,11 @@
+sequenceDiagram
+    participant browser
+    participant server
+    browser->>server: Post https://studies.cs.helsinki.fi/exampleapp/new_note
+    Note right of server: server writes this to memory
+    server-->>browser: 302 Found
+    browser->>server: Get /exampleapp/notes
+    server-->>browser: Html document
+    browser->>server: Get /exampleapp/data.json
+    server-->>browser: Update notes
+
