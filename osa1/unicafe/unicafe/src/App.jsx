@@ -4,9 +4,14 @@ const Header=({head}) => {
   return <h1>{head}</h1>
 }
 
-const StatisticLine=(props) =>{
-  return <div>{props.text} {props.value} {props.end}</div>
-}
+const StatisticLine = ({ text, value, end }) => {
+  return (
+    <tr>
+      <td>{text}</td>
+      <td>{value} {end}</td>
+    </tr>
+  );
+};
 
 const Statistics=({bad, neutral, good}) =>{
   const all = good + neutral + bad;
@@ -20,12 +25,16 @@ const Statistics=({bad, neutral, good}) =>{
   const positive = !all ? 0 : 100 * good / all;
   return <>
     <Header head = 'statistics'></Header>
-    <StatisticLine text="good" value={good} />
-    <StatisticLine text="neutral" value={neutral} />
-    <StatisticLine text="bad" value={bad} />
-    <StatisticLine text="all" value = {all}></StatisticLine>
-    <StatisticLine text="average" value = {average}></StatisticLine>
-    <StatisticLine text="positive" value = {positive} end='%'></StatisticLine>
+    <table>
+      <tbody>
+        <StatisticLine text="good" value={good} />
+        <StatisticLine text="neutral" value={neutral} />
+        <StatisticLine text="bad" value={bad} />
+        <StatisticLine text="all" value = {all}></StatisticLine>
+        <StatisticLine text="average" value = {average}></StatisticLine>
+        <StatisticLine text="positive" value = {positive} end='%'></StatisticLine>
+      </tbody>
+    </table>
   </>
   }
 }
