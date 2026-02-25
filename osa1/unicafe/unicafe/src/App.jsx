@@ -10,6 +10,12 @@ const Display=({text, number, end}) =>{
 
 const Statistics=({bad, neutral, good}) =>{
   const all = good + neutral + bad;
+  if (all == 0){
+    return <>
+    <Header head = 'statistics'></Header>
+    <div>No feedback given</div>
+    </>
+  }else{
   const average = !all ? 0 : (good - bad) / all;
   const positive = !all ? 0 : 100 * good / all;
   return <>
@@ -21,6 +27,7 @@ const Statistics=({bad, neutral, good}) =>{
     <Display text="average" number = {average}></Display>
     <Display text="positive" number = {positive} end='%'></Display>
   </>
+  }
 }
 
 const Button = ({ state, onClick }) => {
