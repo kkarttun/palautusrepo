@@ -4,8 +4,8 @@ const Header=({head}) => {
   return <h1>{head}</h1>
 }
 
-const Display=({text, number, end}) =>{
-  return <div>{text} {number} {end}</div>
+const StatisticLine=(props) =>{
+  return <div>{props.text} {props.value} {props.end}</div>
 }
 
 const Statistics=({bad, neutral, good}) =>{
@@ -20,18 +20,18 @@ const Statistics=({bad, neutral, good}) =>{
   const positive = !all ? 0 : 100 * good / all;
   return <>
     <Header head = 'statistics'></Header>
-    <Display text="good" number={good} />
-    <Display text="neutral" number={neutral} />
-    <Display text="bad" number={bad} />
-    <Display text="all" number = {all}></Display>
-    <Display text="average" number = {average}></Display>
-    <Display text="positive" number = {positive} end='%'></Display>
+    <StatisticLine text="good" value={good} />
+    <StatisticLine text="neutral" value={neutral} />
+    <StatisticLine text="bad" value={bad} />
+    <StatisticLine text="all" value = {all}></StatisticLine>
+    <StatisticLine text="average" value = {average}></StatisticLine>
+    <StatisticLine text="positive" value = {positive} end='%'></StatisticLine>
   </>
   }
 }
 
 const Button = ({ state, onClick }) => {
-  return <button onClick={() => onClick(state)}>{state}</button>
+  return <button onClick={onClick}>{state}</button>
 }
 
 function App() {
