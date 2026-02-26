@@ -1,6 +1,26 @@
 import { useState } from 'react'
 
-
+const Filter = ({search, onChange}) => {
+  return <div>
+    filter show with <input value={search} onChange={onChange} />
+  </div>
+}
+const PersonForm = ({addEntries, newName, setNewName, newNumber, setNewNumber}) => {
+  return <form onSubmit={addEntries}>
+        <div>
+          name: <input value = {newName} onChange={event => setNewName(event.target.value)}/>
+          <br />
+          number: <input value = {newNumber} onChange = {event => setNewNumber(event.target.value)}/>
+        </div>
+        <div>
+          <button type="submit">add</button>
+        </div>
+      </form>
+}
+const Persons = ({persons, search}) => {
+  return <div>{(persons.filter(person => person.name.toLowerCase().includes(search.toLowerCase())))
+      .map(person => (<div key = {person.name} >{person.name} {person.number}</div>))}</div>
+}
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456'},
@@ -39,25 +59,11 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <form>
-        <div>
-          filter show with <input value = {search} onChange={event => setSearch(event.target.value)}/>
-        </div>
-      </form>
-      <h2>add a new</h2>
-      <form onSubmit={addEntries}>
-        <div>
-          name: <input value = {newName} onChange={event => setNewName(event.target.value)}/>
-          <br />
-          number: <input value = {newNumber} onChange = {event => setNewNumber(event.target.value)}/>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      <div>{(persons.filter(person => person.name.toLowerCase().includes(search.toLowerCase())))
-      .map(person => (<div key = {person.name} >{person.name} {person.number}</div>))}</div>
+      <Filter search={search} onChange = {event => setSearch(event.target.value)}/>
+      <h3>add a new</h3>
+      <PersonForm {...{addEntries, newName, setNewName, newNumber, setNewNumber}}/>
+      <h3>Numbers</h3>
+      <Persons {...{persons, search}}/>
     </div>
   )
 }
