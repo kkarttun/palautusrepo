@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 const Filter = ({search, onChange}) => {
   return <div>
@@ -19,15 +20,18 @@ const PersonForm = ({addEntries, newName, setNewName, newNumber, setNewNumber}) 
 }
 const Persons = ({persons, search}) => {
   return <div>{(persons.filter(person => person.name.toLowerCase().includes(search.toLowerCase())))
-      .map(person => (<div key = {person.name} >{person.name} {person.number}</div>))}</div>
+      .map(person => (<div key = {person.id} >{person.name} {person.number}</div>))}</div>
 }
+
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456'},
-    { name: 'Ada Lovelace', number: '39-44-5323523'},
-    { name: 'Dan Abramov', number: '12-43-234345'},
-    { name: 'Mary Poppendieck', number: '39-23-6423122'}
-  ])
+  const [persons, setPersons] = useState([])
+  useEffect(() => {
+  axios
+    .get('http://localhost:3001/persons')
+    .then(response => {
+      setPersons(response.data)
+    })
+  }, [])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [search, setSearch] = useState('')
@@ -46,13 +50,17 @@ const App = () => {
     } else if(sameName && sameNumber){
       alert(`${newName} and ${newNumber} are already added to phonebook`);
     } else {
-      setPersons(persons.concat(
-        {
-           name: newName,
-           number: newNumber
-        }));
-      setNewName('');
-      setNewNumber('');
+      const newPerson = {
+        name: newName,
+        number: newNumber
+      }
+      axios
+    .post('http://localhost:3001/persons', newPerson)
+    .then(response => {
+      setPersons(persons.concat(response.data))
+      setNewName('')
+      setNewNumber('')
+    })
     }
   }
 
