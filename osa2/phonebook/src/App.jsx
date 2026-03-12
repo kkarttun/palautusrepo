@@ -6,6 +6,7 @@ const Filter = ({search, onChange}) => {
     filter show with <input value={search} onChange={onChange} />
   </div>
 }
+
 const PersonForm = ({addEntries, newName, setNewName, newNumber, setNewNumber}) => {
   return <form onSubmit={addEntries}>
         <div>
