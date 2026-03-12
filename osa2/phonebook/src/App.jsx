@@ -19,13 +19,28 @@ const PersonForm = ({addEntries, newName, setNewName, newNumber, setNewNumber}) 
         </div>
       </form>
 }
-const Persons = ({persons, search}) => {
+
+
+
+const Persons = ({persons, search, handleDelete}) => {
   return <div>{(persons.filter(person => person.name.toLowerCase().includes(search.toLowerCase())))
-      .map(person => (<div key = {person.id} >{person.name} {person.number}</div>))}</div>
+      .map(person => (<div key = {person.id} >{person.name} {person.number} <button onClick={() => handleDelete(person.id)}>delete</button></div>))}
+      </div>
 }
 
 const App = () => {
   const [persons, setPersons] = useState([])
+
+  const handleDelete = (id) => {
+    const person = persons.find(p => p.id === id)
+
+    if (window.confirm(`Delete ${person.name}?`)) {
+      entryServices.remove(id).then(() => {
+        setPersons(persons.filter(p => p.id !== id))
+      })
+    }
+  }
+
   useEffect(() => {
   entryServices
     .getAll()
@@ -72,7 +87,7 @@ const App = () => {
       <h3>add a new</h3>
       <PersonForm {...{addEntries, newName, setNewName, newNumber, setNewNumber}}/>
       <h3>Numbers</h3>
-      <Persons {...{persons, search}}/>
+      <Persons {...{persons, search, handleDelete}}/>
     </div>
   )
 }
