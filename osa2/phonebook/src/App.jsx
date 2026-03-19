@@ -3,8 +3,22 @@ import entryServices from './services/entries'
 import './style.css'
 import {Filter, PersonForm, Persons, Info} from './components/index.jsx'
 
+
 const App = () => {
   const [persons, setPersons] = useState([])
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [search, setSearch] = useState('')
+  const [Notification, setNotification] = useState(null)
+  const [NotificationColor, setNotificationColor] = useState('green')
+
+  const changeNotification = ({message, color}) => {
+    setNotification(message)
+    setNotificationColor(color)
+    setTimeout(() => {
+          setNotification(null)
+        }, 5000)
+  }
 
   const handleDelete = (id) => {
     const person = persons.find(p => p.id === id)
@@ -12,7 +26,10 @@ const App = () => {
     if (window.confirm(`Delete ${person.name}?`)) {
       entryServices.remove(id).then(() => {
         setPersons(persons.filter(p => p.id !== id))
-      })
+      }).catch(() => {
+        changeNotification({message: `informations of ${person.name} have already been removed from the server`
+        , color: 'red'})
+    })
     }
   }
 
@@ -23,10 +40,6 @@ const App = () => {
       setPersons(response.data)
     })
   }, [])
-  const [newName, setNewName] = useState('')
-  const [newNumber, setNewNumber] = useState('')
-  const [search, setSearch] = useState('')
-  const [Notification, setNotification] = useState(null)
 
   const addEntries = (event) => {
     event.preventDefault();
@@ -54,13 +67,13 @@ const App = () => {
             p.id !== sameName.id ? p : update
           )
         )
-        setNotification(`${newName} number changed to ${newNumber}`)
+        changeNotification({message: `${newName} number changed to ${newNumber}`, color: 'green'})
         setNewName('')
         setNewNumber('')
-        setTimeout(() => {
-          setNotification(null)
-        }, 5000)
-        })
+        }).catch(() => {
+          changeNotification({message: `Information of ${newName} have already been removed from the server`,
+          color: 'red'})
+      })
       }
     } else if (sameNumber && !sameName) {
       alert(`${newNumber} is already added to phonebook`);
@@ -75,12 +88,9 @@ const App = () => {
     .create(newPerson)
     .then(response => {
       setPersons(persons.concat(response.data))
-      setNotification(`Added ${newName}`)
+      changeNotification({message: `Added ${newName}`, color: 'green'})
       setNewName('')
       setNewNumber('')
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
     })
     }
   }
@@ -88,7 +98,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Info text = {Notification}/>
+      <Info text = {Notification} color = {NotificationColor}/>
       <Filter search={search} onChange = {event => setSearch(event.target.value)}/>
       <h3>add a new</h3>
       <PersonForm {...{addEntries, newName, setNewName, newNumber, setNewNumber}}/>
