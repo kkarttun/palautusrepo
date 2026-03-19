@@ -1,30 +1,7 @@
 import { useState, useEffect } from 'react'
 import entryServices from './services/entries'
-
-const Filter = ({search, onChange}) => {
-  return <div>
-    filter show with <input value={search} onChange={onChange} />
-  </div>
-}
-
-const PersonForm = ({addEntries, newName, setNewName, newNumber, setNewNumber}) => {
-  return <form onSubmit={addEntries}>
-        <div>
-          name: <input value = {newName} onChange={event => setNewName(event.target.value)}/>
-          <br />
-          number: <input value = {newNumber} onChange = {event => setNewNumber(event.target.value)}/>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-}
-
-const Persons = ({persons, search, handleDelete}) => {
-  return <div>{(persons.filter(person => person.name.toLowerCase().includes(search.toLowerCase())))
-      .map(person => (<div key = {person.id} >{person.name} {person.number} <button onClick={() => handleDelete(person.id)}>delete</button></div>))}
-      </div>
-}
+import './style.css'
+import {Filter, PersonForm, Persons, Info} from './components/index.jsx'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -49,7 +26,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [search, setSearch] = useState('')
-
+  const [Notification, setNotification] = useState(null)
 
   const addEntries = (event) => {
     event.preventDefault();
@@ -77,8 +54,12 @@ const App = () => {
             p.id !== sameName.id ? p : update
           )
         )
+        setNotification(`${newName} number changed to ${newNumber}`)
         setNewName('')
         setNewNumber('')
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
         })
       }
     } else if (sameNumber && !sameName) {
@@ -94,8 +75,12 @@ const App = () => {
     .create(newPerson)
     .then(response => {
       setPersons(persons.concat(response.data))
+      setNotification(`Added ${newName}`)
       setNewName('')
       setNewNumber('')
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
     })
     }
   }
@@ -103,6 +88,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Info text = {Notification}/>
       <Filter search={search} onChange = {event => setSearch(event.target.value)}/>
       <h3>add a new</h3>
       <PersonForm {...{addEntries, newName, setNewName, newNumber, setNewNumber}}/>
