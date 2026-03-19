@@ -20,8 +20,6 @@ const PersonForm = ({addEntries, newName, setNewName, newNumber, setNewNumber}) 
       </form>
 }
 
-
-
 const Persons = ({persons, search, handleDelete}) => {
   return <div>{(persons.filter(person => person.name.toLowerCase().includes(search.toLowerCase())))
       .map(person => (<div key = {person.id} >{person.name} {person.number} <button onClick={() => handleDelete(person.id)}>delete</button></div>))}
@@ -57,10 +55,32 @@ const App = () => {
     event.preventDefault();
     if (!newName) return
     if (!newNumber) return
+
     const sameName = persons.find(person => person.name === newName);
     const sameNumber = persons.find(person => person.number === newNumber);
+
+
+
     if (sameName && !sameNumber){
-      alert(`${newName} is already added to phonebook`);
+      if (window.confirm(`${newName}  is already added to phonebook. replace the old number with the new one?`)) {
+        const updatedPerson = {
+        ...sameName,
+        number: newNumber
+        }
+
+      entryServices
+        .update(sameName.id, updatedPerson)
+        .then(response => {
+        const update = response.data || updatedPerson
+        setPersons(
+          persons.map(p =>
+            p.id !== sameName.id ? p : update
+          )
+        )
+        setNewName('')
+        setNewNumber('')
+        })
+      }
     } else if (sameNumber && !sameName) {
       alert(`${newNumber} is already added to phonebook`);
     } else if(sameName && sameNumber){
