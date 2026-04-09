@@ -7,7 +7,23 @@ const Filter = ({search, onChange}) => {
   </div>
 }
 
-const Names = ({data}) => {
+const CountryInfo = ({data}) => {
+  return <>
+        <h2>{data.name.common}</h2>
+        <div>Capital(s): {data.capital.map((item, index) => (
+          <p key={index}>{item}</p>
+        ))}</div>
+        <br />
+        <div>Area {data.area}</div>
+        <h2>Languages</h2>
+        <ul>{Object.values(data.languages).map((item, index) => (
+        <li key={index}>{item}</li>
+        ))}</ul>
+        <img src = {data.flags["png"]}></img>
+      </>
+}
+
+  const Names = ({data, show, setShow}) => {
 
 
     if(data.length > 10){
@@ -15,32 +31,37 @@ const Names = ({data}) => {
     }
   
     if(data.length === 1){
-      return <>
-        <h2>{data[0].name.common}</h2>
-        <div>Capital(s): {data[0].capital.map((item, index) => (
-          <p key={index}>{item}</p>
-        ))}</div>
-        <br />
-        <div>Area {data[0].area}</div>
-        <h2>Languages</h2>
-        <ul>{Object.values(data[0].languages).map((item, index) => (
-        <li key={index}>{item}</li>
-        ))}</ul>
-        <img src = {data[0].flags["png"]}></img>
-      </>
+      return <CountryInfo data = {data[0]} />
     }
-    console.log(data);
     return <div>
       {data.map((item, index) => (
-        <p key={index}>{item.name.common}</p>
-      ))}
+      <div key={index}>
+        {show[index] ? (
+            <>
+            <button style={{ display: "inline" }} onClick = {() => {
+                setShow(prev => prev.map((v, i) => i === index ? !v : v));
+              }}>hide</button>
+            <CountryInfo data={item} />
+            </>
+          ) : (
+            <>
+              <span>{item.name.common} </span>
+              <button style={{ display: "inline" }} onClick = {() => {
+                setShow(prev => prev.map((v, i) => i === index ? !v : v));
+              }}>Show</button>
+            </>
+          )}
+
       </div>
-}
+    ))}
+    </div>
+  }
 
 function App() {
 
   const [search, setSearch] = useState('')
   const [countries, setCountries] = useState([]);
+  const [show, setShow] = useState([]);
 
   useEffect(() => {
       axios
@@ -49,7 +70,8 @@ function App() {
         const results = response.data.filter(country =>
         country.name.common.toLowerCase().includes(search.toLowerCase())
       );
-      setCountries(results)
+      setCountries(results);
+      setShow(Array(results.length).fill(false));
 
     })
   }, [search]);
@@ -59,7 +81,7 @@ function App() {
   return (
     <>
       <Filter search={search} onChange = {event => setSearch(event.target.value)}/>
-      <Names data = {countries}/>
+      <Names data = {countries} show={show} setShow={setShow} />
     </>
   )
 }
