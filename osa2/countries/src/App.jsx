@@ -1,5 +1,6 @@
 import { useEffect, useState} from 'react'
 import axios from 'axios'
+const api_key = import.meta.env.VITE_SOME_KEY
 
 const Filter = ({search, onChange}) => {
   return <div>
@@ -8,6 +9,15 @@ const Filter = ({search, onChange}) => {
 }
 
 const CountryInfo = ({data}) => {
+  const [weather, setWeather] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get(`http://api.weatherstack.com/current?access_key=${api_key}&query=${data.capital[0]}`)
+      .then(response => {
+        setWeather(response.data);
+      });
+  }, [data]);
   return <>
         <h2>{data.name.common}</h2>
         <div>Capital(s): {data.capital.map((item, index) => (
@@ -20,11 +30,22 @@ const CountryInfo = ({data}) => {
         <li key={index}>{item}</li>
         ))}</ul>
         <img src = {data.flags["png"]}></img>
+        {weather && (
+        <div>
+          <h2>Weather in {data.capital[0]}</h2>
+          <p>Temperature: {weather.current.temperature} Celsius</p>
+          <>
+            {weather.current.weather_icons.map((item, index) => (
+              <img key={index} src={item} />
+            ))}
+          </>
+          <p>windspeed {Math.round(weather.current.wind_speed / 3.6)} m / s</p>
+        </div>
+      )}
       </>
 }
 
   const Names = ({data, show, setShow}) => {
-
 
     if(data.length > 10){
       return <>Too many matches, specify another filter</>
@@ -58,7 +79,6 @@ const CountryInfo = ({data}) => {
   }
 
 function App() {
-
   const [search, setSearch] = useState('')
   const [countries, setCountries] = useState([]);
   const [show, setShow] = useState([]);
@@ -71,13 +91,13 @@ function App() {
         country.name.common.toLowerCase().includes(search.toLowerCase())
       );
       setCountries(results);
-      setShow(Array(results.length).fill(false));
-
+      if(results.length === 1){
+        setShow([true])
+      }else{
+        setShow(Array(results.length).fill(false));
+      }
     })
   }, [search]);
-  
-
-
   return (
     <>
       <Filter search={search} onChange = {event => setSearch(event.target.value)}/>
