@@ -3,7 +3,19 @@ const app = express()
 app.use(express.json())
 
 const morgan = require('morgan')
-app.use(morgan('tiny'))
+
+morgan.token('body', (request) => {
+  if (request.method !== 'POST') return '';
+
+  return JSON.stringify({
+    name: request.body.name,
+    number: request.body.number
+  });
+});
+
+app.use(
+  morgan(':method :url :status :res[content-length] - :response-time ms :body')
+);
 
 let notes = [
     { 
@@ -54,6 +66,10 @@ app.get('/info', (request, response) => {
 
 app.delete('/api/persons/:id', (request, response) => {
   const id = request.params.id;
+  
+  if (!notes.some(note => note.id === id)) {
+   return response.status(404).json({ error: 'not found' });
+  }
 
   notes = notes.filter(note => note.id !== id);
 
@@ -69,11 +85,12 @@ app.post('/api/persons', (request, response) => {
   if (notes.some(note => note.name === person.name)){
     return response.status(400).json({ error: 'name must be unique' });
   }
-  person.id = Math.floor((Math.random() * 10000000) + 1).toString();
 
-  notes = notes.concat(person)
+  const id = Math.floor((Math.random() * 10000000) + 1).toString();
 
-  response.json(person)
+  notes = notes.concat({id, ...person})
+
+  response.json({id, ...person})
 })
 
 
