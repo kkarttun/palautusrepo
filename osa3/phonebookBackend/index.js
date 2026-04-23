@@ -2,6 +2,9 @@ const express = require('express')
 const app = express()
 app.use(express.json())
 
+const morgan = require('morgan')
+app.use(morgan('tiny'))
+
 let notes = [
     { 
       "id": "1",
@@ -66,9 +69,7 @@ app.post('/api/persons', (request, response) => {
   if (notes.some(note => note.name === person.name)){
     return response.status(400).json({ error: 'name must be unique' });
   }
-  person.id = Math.floor((Math.random() * 10000000) + 1);
-
-  console.log(person)
+  person.id = Math.floor((Math.random() * 10000000) + 1).toString();
 
   notes = notes.concat(person)
 
