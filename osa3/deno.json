@@ -1,8 +1,0 @@
-{
-    "deploy": {
-        "install": "npm install --prefix phonebookFrontend && npm install --prefix phonebookBackend",
-        "build": "npm run build --prefix phonebookFrontend"
-    },
-    "exports": "./phonebookBackend/index.js",
-    "runtime": { "root": "osa3", "entrypoint": "./phonebookBackend/index.js"}
-}
