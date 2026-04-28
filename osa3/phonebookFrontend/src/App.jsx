@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import entryServices from './services/entries'
-import './style.css'
 import {Filter, PersonForm, Persons, Info} from './components/index.jsx'
 
 
@@ -34,6 +33,7 @@ const App = () => {
   }
 
   useEffect(() => {
+    console.log("test")
   entryServices
     .getAll()
     .then(response => {
