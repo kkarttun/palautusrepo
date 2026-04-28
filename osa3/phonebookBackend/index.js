@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 app.use(express.json())
-app.use(express.static('"../frontend/dist"'))
+app.use(express.static('../phonebookFrontend/dist'))
 
 const cors = require('cors')
 
