@@ -4,5 +4,5 @@
         "build": "npm run build --prefix phonebookFrontend"
     },
     "exports": "./phonebookBackend/index.js",
-    "runtime": {"entrypoint": "./phonebookBackend/index.js"}
+    "runtime": { "root": "osa3", "entrypoint": "./phonebookBackend/index.js"}
 }
