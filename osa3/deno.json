@@ -1,6 +1,8 @@
 {
     "deploy": {
         "install": "npm install --prefix phonebookFrontend && npm install --prefix phonebookBackend",
-        "build": "npm run build --prefix phonebookFrontend"},
+        "build": "npm run build --prefix phonebookFrontend"
+    },
+    "exports": "./phonebookBackend/index.js",
     "runtime": {"entrypoint": "./phonebookBackend/index.js"}
 }
