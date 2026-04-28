@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = 'https://palautusrepo-q0cgtdhaq6ba.miquel-de-ciquel.deno.net/api/persons'
+const baseUrl = 'api/persons'
 
 const getAll = () => {
     return axios.get(baseUrl)
