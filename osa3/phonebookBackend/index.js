@@ -98,6 +98,31 @@ app.post('/api/persons', (request, response) => {
   response.json({id, ...person})
 })
 
+app.put('/api/persons/:id', (request, response) => {
+  const id = request.params.id
+  const body = request.body
+
+  if (!body.name || !body.number) {
+    return response.status(400).json({ error: 'name or number missing' })
+  }
+
+  const personIndex = notes.findIndex(note => note.id === id)
+
+  if (personIndex === -1) {
+    return response.status(404).json({ error: 'person not found' })
+  }
+
+  const updatedPerson = {
+    id: id,
+    name: body.name,
+    number: body.number
+  }
+
+  notes[personIndex] = updatedPerson
+
+  response.json(updatedPerson)
+})
+
 
 const PORT = 3001
 app.listen(PORT, () => {

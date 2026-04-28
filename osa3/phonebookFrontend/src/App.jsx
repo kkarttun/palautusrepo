@@ -26,8 +26,7 @@ const App = () => {
       entryServices.remove(id).then(() => {
         setPersons(persons.filter(p => p.id !== id))
       }).catch(() => {
-        changeNotification({message: `informations of ${person.name} have already been removed from the server`
-        , color: 'red'})
+        changeNotification({message: `informations of ${person.name} have already been removed from the server`, color: 'red'})
     })
     }
   }
