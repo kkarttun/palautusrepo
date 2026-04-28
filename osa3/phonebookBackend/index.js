@@ -18,6 +18,8 @@ morgan.token('body', (request) => {
   });
 });
 
+//teaststasjpasjdpoajdpojsapodjaspdo
+
 app.use(
   morgan(':method :url :status :res[content-length] - :response-time ms :body')
 );
@@ -96,31 +98,6 @@ app.post('/api/persons', (request, response) => {
   notes = notes.concat({id, ...person})
 
   response.json({id, ...person})
-})
-
-app.put('/api/persons/:id', (request, response) => {
-  const id = request.params.id
-  const body = request.body
-
-  if (!body.name || !body.number) {
-    return response.status(400).json({ error: 'name or number missing' })
-  }
-
-  const personIndex = notes.findIndex(note => note.id === id)
-
-  if (personIndex === -1) {
-    return response.status(404).json({ error: 'person not found' })
-  }
-
-  const updatedPerson = {
-    id: id,
-    name: body.name,
-    number: body.number
-  }
-
-  notes[personIndex] = updatedPerson
-
-  response.json(updatedPerson)
 })
 
 
